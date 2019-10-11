@@ -1,0 +1,9 @@
+{% extends 'investmentguidelines/base.html' %}
+
+{% block content %}
+    {% for ig in igs %}
+        <div class="ig-list">
+            <li><a href="{% url 'ig_detail' pk=ig.pk %}">{{ ig.portfolio_code }}</a></li>
+        </div>
+    {% endfor %}
+{% endblock %}
