@@ -147,5 +147,5 @@ class InvestmentGuidelineOptions(models.Model):
         verbose_name_plural = _('Investment Guideline Options')
         ordering = ['investmentguideline', 'strategy']
 
-    def __str__(self):
-        return self.investmentguideline.portfolio_code + ": " + self.strategy.strategy_name
+    # def __str__(self):
+    #     return self.investmentguideline.portfolio_code + ": " + self.strategy.strategy_name

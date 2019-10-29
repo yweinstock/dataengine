@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from .models import InvestmentGuideline, InvestmentGuidelineOptions, Strategy
-from .forms import InvestmentGuidelineForm, InvestmentGuidelineOptionsForm
+from .forms import InvestmentGuidelineForm, InvestmentGuidelineOptionsForm, InlineFormSetField, IGOptionsFormSet
 from django.contrib.auth.decorators import login_required
-# from django.conf import settings
+from django.views.generic.edit import CreateView, UpdateView
+from django.db import transaction
+from django.urls import reverse_lazy
 
 
 @login_required
@@ -16,16 +18,45 @@ def investmentguidelines_detail(request, pk):
     ig_opts = InvestmentGuidelineOptions.objects.filter(investmentguideline_id=pk)
     return render(request, 'investmentguidelines/ig_detail.html', {'ig': ig, 'ig_opts': ig_opts})
 
+def InvestmentGuidelineCreate(CreateView):
+    model = InvestmentGuideline
+    template_name = 'investmentguidelines/ig_edit.html'
+    form_class = InvestmentGuidelineForm
+    success_url = None
+
+    def get_context_date(self, **kwargs):
+        data = super(InvestmentGuidelineCreate, self).get_context_date(**kwargs)
+        if self.request.POST:
+            data['investment_guideline_options'] = IGOptionsFormSet(self.request.POST)
+        else:
+            data['investment_guideline_options'] = IGOptionsFormSet()
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_date()
+        investment_guideline_options = context['investment_guideline_options']
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            self.object = form.save()
+            if investment_guideline_options.is_valid():
+                investment_guideline_options.instance = self.object
+                investment_guideline_options.save()
+        return super(InvestmentGuidelineCreate, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy()
+
+
 @login_required
 def investmentguidelines_new(request):
     if request.method == "POST":
         form = InvestmentGuidelineForm(request.POST)
+
         if form.is_valid():
             ig = form.save(commit=False)
             ig.created_by = request.user
             ig.updated_by = request.user
             ig.save()
-
             strategies = request.POST.getlist('strategies')
             for s_id in strategies:
                 s = Strategy.objects.get(pk=s_id)

@@ -1,7 +1,9 @@
 from django import forms
 from .models import InvestmentGuideline, InvestmentGuidelineOptions, Strategy
+from django.db import transaction
+
 from django_superform import SuperModelForm, InlineFormSetField
-from django.forms import modelformset_factory
+from django.forms import inlineformset_factory
 
 
 class StrategyForm(forms.ModelForm):
@@ -23,15 +25,30 @@ class InvestmentGuidelineOptionsForm(forms.ModelForm):
             'is_enhanced',
             'is_impact',
         )
-#
-# IGOptionsFormSet = modelformset_factory(InvestmentGuidelineOptionsForm)
+
+IGOptionsFormSet = inlineformset_factory(
+    InvestmentGuideline,
+    InvestmentGuidelineOptions,
+    form=InvestmentGuidelineOptionsForm,
+    fields = (
+        'strategy',
+        'is_enhanced',
+        'is_impact',
+    ),
+    extra=1,
+    can_delete=True
+)
 
 class InvestmentGuidelineForm(forms.ModelForm):
-    # strategies = InlineFormSetField(formset_class=IGOptionsFormSet)
     class Meta:
         model = InvestmentGuideline
         fields = (
             'portfolio_code',
             'investment_counselor',
         )
-    strategies = forms.ModelMultipleChoiceField(queryset=Strategy.objects.all())
+        label = {
+            'portfolio_code': 'Portfolio Code'
+        }
+    # strategies = InlineFormSetField(formset_class=IGOptionsFormSet)
+    # strategies = forms.ModelMultipleChoiceField(queryset=Strategy.objects.all())
+
