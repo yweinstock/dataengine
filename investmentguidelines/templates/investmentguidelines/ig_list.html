@@ -1,9 +1,32 @@
 {% extends 'investmentguidelines/base.html' %}
 
 {% block content %}
-    {% for ig in igs %}
-        <div class="ig-list">
-            <li><a href="{% url 'ig_detail' pk=ig.pk %}">{{ ig.portfolio_code }}</a></li>
-        </div>
-    {% endfor %}
+        <h2 class="content-subhead">
+            Investment Guidelines
+            <a class="content-link" href="{% url 'ig_new' %}"><i class="fa fa-plus-square"></i></a>
+        </h2>
+
+
+    <p>
+        <table class="pure-table pure-table-striped" id="table_ig_list">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0,'table_ig_list')">#</th>
+                    <th onclick="sortTable(1,'table_ig_list')">Porfolio Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ig in igs %}
+                <tr>
+                    <td>
+                        <a href="{% url 'ig_detail' pk=ig.pk %}">{{ ig.pk }}</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'ig_detail' pk=ig.pk %}">{{ ig.portfolio_code }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </p>
 {% endblock %}

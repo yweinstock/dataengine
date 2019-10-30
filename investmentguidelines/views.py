@@ -18,14 +18,14 @@ def investmentguidelines_detail(request, pk):
     ig_opts = InvestmentGuidelineOptions.objects.filter(investmentguideline_id=pk)
     return render(request, 'investmentguidelines/ig_detail.html', {'ig': ig, 'ig_opts': ig_opts})
 
-def InvestmentGuidelineCreate(CreateView):
+class InvestmentGuidelineCreate(CreateView):
     model = InvestmentGuideline
-    template_name = 'investmentguidelines/ig_edit.html'
+    template_name = 'investmentguidelines/ig_create.html'
     form_class = InvestmentGuidelineForm
     success_url = None
 
-    def get_context_date(self, **kwargs):
-        data = super(InvestmentGuidelineCreate, self).get_context_date(**kwargs)
+    def get_context_data(self, **kwargs):
+        data = super(InvestmentGuidelineCreate, self).get_context_data(**kwargs)
         if self.request.POST:
             data['investment_guideline_options'] = IGOptionsFormSet(self.request.POST)
         else:
@@ -33,7 +33,7 @@ def InvestmentGuidelineCreate(CreateView):
         return data
 
     def form_valid(self, form):
-        context = self.get_context_date()
+        context = self.get_context_data()
         investment_guideline_options = context['investment_guideline_options']
         with transaction.atomic():
             form.instance.created_by = self.request.user
@@ -44,7 +44,40 @@ def InvestmentGuidelineCreate(CreateView):
         return super(InvestmentGuidelineCreate, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy()
+        return reverse_lazy('investmentguidelines:ig_create', kwargs={'pk': self.object.pk})
+
+
+
+class InvestmentGuidelineUpdate(CreateView):
+    model = InvestmentGuideline
+    template_name = 'investmentguidelines/ig_edit.html'
+    form_class = InvestmentGuidelineForm
+    success_url = None
+
+
+    def get_context_data(self, **kwargs):
+        data = super(InvestmentGuidelineUpdate, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['investment_guideline_options'] = IGOptionsFormSet(self.request.POST, instance=self.object)
+        else:
+            data['investment_guideline_options'] = IGOptionsFormSet(instance=self.object)
+        return data
+
+
+    def form_valid(self, form):
+        context = self.get_context_date()
+        investment_guideline_options = context['investment_guideline_options']
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            self.object = form.save()
+            if investment_guideline_options.is_valid():
+                investment_guideline_options.instance = self.object
+                investment_guideline_options.save()
+        return super(InvestmentGuidelineUpdate, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('investmentguidelines:ig_detail', kwargs={'pk': self.object.pk})
+
 
 
 @login_required
@@ -72,6 +105,11 @@ def investmentguidelines_new(request):
     else:
         form = InvestmentGuidelineForm()
     return render(request, 'investmentguidelines/ig_edit.html', {'form': form})
+
+
+
+
+
 
 @login_required
 def investmentguidelines_edit(request, pk):
