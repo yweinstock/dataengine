@@ -22,5 +22,6 @@ admin.site.site_title = "DataEngine Portal"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('api.urls')),
     path('', include('investmentguidelines.urls')),
 ]

@@ -140,3 +140,6 @@ def investmentguidelines_edit(request, pk):
     else:
         form = InvestmentGuidelineForm(instance=ig)
     return render(request, 'investmentguidelines/ig_edit.html', {'form': form})
+
+
+
