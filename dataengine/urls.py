@@ -15,13 +15,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.shortcuts import redirect
 
 admin.site.site_header = "DataEngine Admin"
 admin.site.site_title = "DataEngine Portal"
-# admin.site.index_title = "Welcome the DataEngine Admin Portal"
+
+
+
+def redirect_view(request):
+    response = redirect('/core/')
+    return response
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('', include('investmentguidelines.urls')),
+    path('core/', include('core.urls')),
+    path('workflow/', include('core.urls')),
+    path('', redirect_view)
 ]

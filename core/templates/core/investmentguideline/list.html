@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="jumbotron">
+            <h1>Investment Guidelines
+                <a class="badge badge-secondary" href="{% url 'ig_new' %}">add</a>
+            </h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <table
+                id="ig_table"
+                data-id-field="id"
+                data-toggle="table"
+                data-search="true"
+                data-show-columns="true"
+                data-url="/api/investmentguidelines/"
+
+        >
+            <thead>
+                <tr>
+                    <th data-field="id" data-sortable="true">ID</th>
+                    <th data-field="portfolio_code" data-sortable="true">Porfolio Code</th>
+                    <th data-field="investment_counselor" data-formatter="invCounselorFormatter" data-sortable="true">Investment Counselor</th>
+                    <th data-field="created_by" data-sortable="true">Created By</th>
+                    <th data-field="created_date" data-sortable="true" data-formatter="dateFormat">Created Date</th>
+                    <th data-field="updated_by" data-sortable="true" >Updated By</th>
+                    <th data-field="updated_date" data-sortable="true" data-formatter="dateFormat">Updated Date</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+    <script>
+
+       function invCounselorFormatter(value, row) {
+            return row.investment_counselor.last_name + ", " + row.investment_counselor.first_name;
+        }
+
+
+
+    </script>
+
+{% endblock %}

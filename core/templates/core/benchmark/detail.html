@@ -1,0 +1,9 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <div class="bm">
+        <h2>{{ bm.benchmark_name }} <a class="btn btn-default" href="{% url 'bm_edit' pk=bm.pk %}"><span class="glyphicon glyphicon-pencil"></span></a></h2>
+        <div class="date">Created: {{ ig.created_by }} on {{ ig.created_date }}</div>
+        <div class="date">Last Updated: {{ ig.updated_by }} on {{ ig.updated_date }}</div>
+    </div>
+{% endblock %}
