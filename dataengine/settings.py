@@ -25,7 +25,7 @@ SECRET_KEY = 'pz-jg)-$d6=z59b5i5o445!v528dlp@czyn-8r5(hjak-3#0km'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -42,8 +42,20 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'api.apps.ApiConfig',
     'rest_framework',
-    'river'
-    # 'dynamic_rest',
+    # 'djoser',
+    'rest_framework.authtoken',
+    'lbattachment',
+    'lbadminlte',
+    'lbutils',
+    'compressor',
+    'djangobower',
+    'el_pagination',
+    'stronghold',
+    'lbworkflow',
+
+    'debug_toolbar',
+
+
 ]
 
 
@@ -55,8 +67,38 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'stronghold.middleware.LoginRequiredMiddleware',
 ]
 
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]
+
+
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+    'debug_toolbar.panels.profiling.ProfilingPanel',
+]
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LBWF_APPS = {
+}
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
@@ -66,8 +108,13 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+        # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
     # "DEFAULT_RENDERER_CLASSES": [
     #     "rest_framework.renderers.JSONRenderer",
     #     "dynamic_rest.renderers.DynamicBrowsableAPIRenderer",
@@ -161,37 +208,60 @@ STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "bower_components"),
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+STATICFILES_FINDERS += (('djangobower.finders.BowerFinder'),)
+BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, "bower_components")
+COMPRESS_ROOT = BOWER_COMPONENTS_ROOT
+
+BOWER_INSTALLED_APPS = (
+    'admin-lte#2.3.11',
+    'font-awesome#4.7.0',
+    'ionicons#2.0.1',
+
+    'modernizr',
+    # POLYFILLS: javascript fallback solutions for older browsers.
+    # CSS3 selectors for IE 6-8.
+    'selectivizr',
+    # min/max width media queries for IE 6-8.
+    'respond',
+    # CSS3 styles for IE 6-8.
+    'pie',
+    # HTML5 tag support for IE 6-8.
+    'html5shiv',
+
+    'masonry#4.1.1',
+    'blueimp-file-upload#9.12.5',
+    'flatpickr-calendar#2.5.6',
+)
+
+# django-compressor
+STATICFILES_FINDERS += (('compressor.finders.CompressorFinder'),)
+COMPRESS_PRECOMPILERS = (
+    ('text/coffeescript', 'coffee --compile --stdio'),
+    ('text/less', 'lessc {infile} {outfile}'),
+    ('text/x-sass', 'sass {infile} {outfile}'),
+    ('text/x-scss', 'sass --scss {infile} {outfile}'),
+)
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL_ = '/media/'
+MEDIA_URL = MEDIA_URL_
+
+
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-SUIT_CONFIG = {
-    # header
-    'ADMIN_NAME': 'Data Engine',
-    # 'HEADER_DATE_FORMAT': 'l, j. F Y',
-    # 'HEADER_TIME_FORMAT': 'H:i',
-
-    # forms
-    # 'SHOW_REQUIRED_ASTERISK': True,  # Default True
-    # 'CONFIRM_UNSAVED_CHANGES': True, # Default True
-
-    # menu
-    # 'SEARCH_URL': '/admin/auth/user/',
-    'MENU_ICONS': {
-       'sites': 'icon-leaf',
-       'auth': 'icon-lock',
-    },
-    # 'MENU_OPEN_FIRST_CHILD': True, # Default True
-    # 'MENU_EXCLUDE': ('auth.group',),
-    # 'MENU': (
-    #     'sites',
-    #     {'app': 'auth', 'icon':'icon-lock', 'models': ('user', 'group')},
-    #     {'label': 'Settings', 'icon':'icon-cog', 'models': ('auth.user', 'auth.group')},
-    #     {'label': 'Support', 'icon':'icon-question-sign', 'url': '/support/'},
-    # ),
-
-    # misc
-    # 'LIST_PER_PAGE': 15
-}
+STRONGHOLD_PUBLIC_URLS = [
+    r'^/admin/',
+]

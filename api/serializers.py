@@ -114,6 +114,14 @@ class BenchmarkSerializer(serializers.ModelSerializer):
             'updated_by',
             'updated_date'
         )
+    def create(self, validated_data):
+        return Benchmark.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.benchmark_name = validated_data.get('benchmark_name', instance.email)
+
+
+
 
 class StrategistSerializer(serializers.ModelSerializer):
     class Meta:

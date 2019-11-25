@@ -1,0 +1,31 @@
+{
+  "name": "dataengine",
+  "authors": [
+    "Yaacov Weinstock <yweinstock@fieracapital.com>"
+  ],
+  "description": "data engine app",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "admin-lte": "2.3.11",
+    "font-awesome":"4.7.0",
+    "ionicons":"2.0.1",
+    "modernizr": "latest",
+    "selectivizr": "latest",
+    "respond": "latest",
+    "pie": "latest",
+    "html5shiv": "latest",
+    "masonry":"4.1.1",
+    "blueimp-file-upload":"9.12.5",
+    "flatpickr-calendar":"2.5.6"
+  }
+}

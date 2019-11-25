@@ -30,6 +30,7 @@ class Benchmark(models.Model):
 
     def __str__(self):
         return self.benchmark_name
+
     class Meta:
         verbose_name = _('Benchmark')
         verbose_name_plural = _('Benchmarks')

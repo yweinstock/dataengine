@@ -66,29 +66,32 @@ class InvestmentGuidelineForm(forms.ModelForm):
         # self.helper.field_class = 'col-md-9'
         self.helper.layout = Layout(
             Div(
-                Fieldset(
-                    'Portfolio Details',
-                    Field(
-                        'portfolio_code',
-                        css_class='form-control'
+                Div(
+                    Fieldset(
+                        'Portfolio Details',
+                        Field(
+                            'portfolio_code',
+                        ),
+                        Field(
+                            'investment_counselor',
+                        ),
                     ),
-                    Field(
-                        'investment_counselor',
-                        css_class='form-control'
+                    css_class="row"
+                ),
+                Div(
+                    Fieldset(
+                        'Add Strategies',
+                        Formset('investment_guideline_options'),
                     ),
+                    css_class="row bg-light"
                 ),
-
-                Fieldset(
-                    'Add Strategies',
-                    Formset('investment_guideline_options'),
-                    css_class='form-control'
+                Div(
+                    ButtonHolder(
+                        Submit('submit', 'save'),
+                    ),
+                    css_class="row border bg-light"
                 ),
-            ),
-            Div(
-                ButtonHolder(
-                    Submit('submit', 'save'),
-                    css_class = 'form-control'
-                ),
+                css_class="container"
             ),
         )
 

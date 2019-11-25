@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.urls import path, include
 from .views import InvestmentGuidelineCreate, BenchmarkCreate
 from . import views
@@ -19,3 +20,11 @@ urlpatterns = [
     # path('accounts/login/', views.LoginView.as_view(), name='login'),
     # path('accounts/logout/', views.LogoutView.as_view(next_page='/'), name='logout'),
 ]
+
+
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

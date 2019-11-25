@@ -1,10 +1,10 @@
 {% load static %}
 {% load crispy_forms_tags %}
-<table class="table table-sm">
+<table class="table table-hover">
 {{ formset.management_form|crispy }}
 
     {% for form in formset.forms %}
-            <tr class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
+            <tr class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }} ">
                 {% for field in form.visible_fields %}
                 <td>
                     {# Include the hidden fields in the form #}
@@ -21,7 +21,6 @@
     {% endfor %}
 
 </table>
-<br>
 
 <script type="text/javascript">
     $('.formset_row-{{ formset.prefix }}').formset({
